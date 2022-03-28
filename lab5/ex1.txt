@@ -1,0 +1,48 @@
+CREATE TABLE Customer (
+  clientID NUMERIC NOT NULL PRIMARY KEY,
+  balance NUMERIC,
+  creditLimit NUMERIC,
+  discount NUMERIC,
+  addresses NUMERIC NOT NULL REFERENCES ShippingAddresses
+);
+
+CREATE TABLE ShippingAddresses (
+  house NUMERIC,
+  street VARCHAR(255),
+  district VARCHAR(255),
+  city VARCHAR(255)
+);
+
+CREATE TABLE _Order (
+  orderID NUMERIC NOT NULL PRIMARY KEY,
+  _date DATE,
+  addresses NUMERIC NOT NULL REFERENCES ShippingAddresses
+);
+
+CREATE TABLE PlaceA (
+  orderID NUMERIC,
+  FOREIGN KEY (orderID) REFERENCES _Order(orderID),
+  customers NUMERIC REFERENCES Customer
+);
+
+CREATE TABLE Item (
+  itemID NUMERIC NOT NULL PRIMARY KEY,
+  description VARCHAR(255)
+);
+
+CREATE TABLE Includes (
+  orders NUMERIC NOT NULL REFERENCES _Order,
+  items NUMERIC REFERENCES Item,
+  quantity NUMERIC
+);
+
+CREATE TABLE Manufacturer (
+  manufacturerID NUMERIC NOT NULL,
+  phonenumber VARCHAR(255)
+);
+
+CREATE TABLE Produce (
+  items NUMERIC NOT NULL REFERENCES Item, 
+  manufacturers NUMERIC REFERENCES Manufacturer,
+  quantity NUMERIC
+)
