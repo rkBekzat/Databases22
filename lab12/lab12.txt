@@ -23,5 +23,27 @@ create (p1:Fighter{name:'Khabib Nurmagomedov',weight:'155'}),
 	(p6)-[:beats]->(p11),
 	(p7)-[:beats]->(p4)
 
-2) 
-Match (p:Fighter) where (p.weight = '155' or p.weight = '170' or p.weight = '185')  RETURN p
+//Return all middle/Walter/light weight fighters (155,170,185) who at least 
+//have one win.
+match (p1:Fighter)-[:beats]->(p2:Fighter)
+	where p1.weight = '155' or p1.weight = '170' or p1.weight = '185' 
+	return distinct p1;
+
+// Return fighters who had 1-1 record with each other. Use Count from the 
+//aggregation functions.
+MATCH (p1:Fighter)-[:beats]->(p2:Fighter), (p2)-[:beats]->(p1) 
+	RETURN DISTINCT p1, p2;
+
+// Return all fighter that can “Khabib Nurmagomedov” beat them and he 
+//didn’t have a fight with them yet. 
+match (p1:Fighter), (p2:Fighter), (p3:Fighter)
+ where p1.name = 'Khabib Nurmagomedov' and (p1)-[:beats]->(p2) and (p2)-[:beats]->(p3) and not (p1)-[:beats]->(p3)
+return p3;
+
+// Return undefeated Fighters(0 loss), defeated fighter (0 wins). 
+match (p1:Fighter) where not ()-[:beats]->(p1) or not (p1)-[:beats]->()
+return p1;
+
+//Return all fighters MMA records and create query to enter the record as a 
+//property for a fighter {name, weight, record}.
+match(w:Fighter)-[:beats]->(l:Fighter) with count(l) as win_record, count(w) as lose_record,  w as winner, l as loser set winner.winning = win_record, loser.losing = lose_record return winner;
